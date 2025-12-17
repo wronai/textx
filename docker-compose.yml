@@ -1,5 +1,3 @@
-version: '3.8'
-
 # NLP2CMD Text4 - Complete Docker Setup
 # 
 # This docker-compose file runs both services:
@@ -10,6 +8,8 @@ version: '3.8'
 #   docker-compose up -d          # Start all services
 #   docker-compose logs -f        # View logs
 #   docker-compose down           # Stop all services
+#
+# Configuration: Edit .env file to change ports and settings
 
 services:
   # ============================================================================
@@ -20,16 +20,22 @@ services:
     build:
       context: .
       dockerfile: 1/Dockerfile.full
-    container_name: nlp2cmd-text4-api
+    container_name: ${API_CONTAINER_NAME:-nlp2cmd-text4-api}
     ports:
-      - "8001:8000"
+      - "${API_EXTERNAL_PORT:-8001}:${API_PORT:-8000}"
     environment:
-      - LOG_LEVEL=info
-      - PYTHONUNBUFFERED=1
+      - HOST=${API_HOST:-0.0.0.0}
+      - PORT=${API_PORT:-8000}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - PYTHONUNBUFFERED=${PYTHONUNBUFFERED:-1}
+      - DEBUG=${DEBUG:-false}
+    env_file:
+      - .env
+      - ./1/.env
     volumes:
       - ./1/output:/app/output
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:${API_PORT:-8000}/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -46,9 +52,15 @@ services:
     build:
       context: ./2
       dockerfile: Dockerfile
-    container_name: nlp2cmd-web-frontend
+    container_name: ${WEB_CONTAINER_NAME:-nlp2cmd-web-frontend}
     ports:
-      - "8081:80"
+      - "${WEB_EXTERNAL_PORT:-8081}:${WEB_PORT:-80}"
+    environment:
+      - API_HOST=nlp2cmd-api
+      - API_PORT=${API_PORT:-8000}
+    env_file:
+      - .env
+      - ./2/.env
     depends_on:
       nlp2cmd-api:
         condition: service_healthy
@@ -64,4 +76,4 @@ services:
 networks:
   nlp2cmd-network:
     driver: bridge
-    name: nlp2cmd-network
+    name: ${NETWORK_NAME:-nlp2cmd-network}

@@ -35,9 +35,9 @@ docker-compose up -d
 docker-compose ps
 
 # Otwórz w przeglądarce:
-# - Frontend: http://localhost:8080
-# - API:      http://localhost:8000
-# - Demo:     http://localhost:8000/demo
+# - Frontend: http://localhost:8081
+# - API:      http://localhost:8001
+# - Demo:     http://localhost:8001/demo
 ```
 
 ## Usługi
@@ -72,7 +72,7 @@ Interaktywny interfejs użytkownika:
 ### Generowanie Landing Page
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/convert/text3html \
+curl -X POST http://localhost:8001/api/v1/convert/text3html \
   -H "Content-Type: application/json" \
   -d '{"command": "generate landing page title: CloudSync"}'
 ```
@@ -80,7 +80,7 @@ curl -X POST http://localhost:8000/api/v1/convert/text3html \
 ### Generowanie formularza
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/convert/text3html \
+curl -X POST http://localhost:8001/api/v1/convert/text3html \
   -H "Content-Type: application/json" \
   -d '{"command": "generate form for contact"}'
 ```
@@ -88,7 +88,7 @@ curl -X POST http://localhost:8000/api/v1/convert/text3html \
 ### Analiza SEO
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/convert/text2html \
+curl -X POST http://localhost:8001/api/v1/convert/text2html \
   -H "Content-Type: application/json" \
   -d '{
     "command": "seo analysis",
@@ -99,7 +99,7 @@ curl -X POST http://localhost:8000/api/v1/convert/text2html \
 ### Pipeline
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/pipeline \
+curl -X POST http://localhost:8001/api/v1/pipeline \
   -H "Content-Type: application/json" \
   -d '{
     "name": "generate-and-validate",
@@ -113,7 +113,7 @@ curl -X POST http://localhost:8000/api/v1/pipeline \
 ### WebSocket (JavaScript)
 
 ```javascript
-const ws = new WebSocket('ws://localhost:8000/api/v1/stream');
+const ws = new WebSocket('ws://localhost:8001/api/v1/stream');
 
 ws.onopen = () => {
     ws.send(JSON.stringify({
@@ -134,11 +134,11 @@ ws.onmessage = (event) => {
 from nlp2cmd.mesh.sdk import MeshClient
 
 # Synchronous
-client = MeshClient("http://localhost:8000")
+client = MeshClient("http://localhost:8001")
 result = client.convert("text3html", "generate landing page")
 
 # Async
-async with MeshClient("http://localhost:8000") as client:
+async with MeshClient("http://localhost:8001") as client:
     result = await client.convert_async("text3html", "generate landing page")
 
 # Pipeline

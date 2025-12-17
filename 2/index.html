@@ -531,8 +531,8 @@
     <footer>
         <p>
             NLP2CMD Text4 API • 
-            <a href="http://localhost:8000/docs" target="_blank">API Docs</a> • 
-            <a href="http://localhost:8000/demo" target="_blank">Demo Page</a>
+            <a href="http://localhost:8001/docs" target="_blank">API Docs</a> • 
+            <a href="http://localhost:8001/demo" target="_blank">Demo Page</a>
         </p>
     </footer>
 
@@ -540,9 +540,9 @@
         // Configuration
         // When running via nginx proxy, use relative paths
         // When running standalone, use direct API URLs
-        const isProxied = window.location.port === '8080' || window.location.port === '80';
-        const API_URL = isProxied ? '' : 'http://localhost:8000';
-        const WS_URL = isProxied ? `ws://${window.location.host}/ws/` : 'ws://localhost:8000/api/v1/stream';
+        const isProxied = window.location.port === '8081' || window.location.port === '80';
+        const API_URL = isProxied ? '' : 'http://localhost:8001';
+        const WS_URL = isProxied ? `ws://${window.location.host}/ws/` : 'ws://localhost:8001/api/v1/stream';
 
         // State
         let currentTemplate = 'landing';

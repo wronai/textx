@@ -3,8 +3,10 @@ FROM nginx:alpine
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Copy static files (CSS/JS is inline in index.html)
+# Copy static files
 COPY index.html /usr/share/nginx/html/
+COPY sdk-demo.html /usr/share/nginx/html/
+COPY nlp2cmd-sdk.js /usr/share/nginx/html/
 
 # Expose port
 EXPOSE 80

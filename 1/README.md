@@ -37,7 +37,7 @@ docker run -p 8000:8000 nlp2cmd-api
 ### Generowanie Landing Page
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/convert/text3html \
+curl -X POST http://localhost:8001/api/v1/convert/text3html \
   -H "Content-Type: application/json" \
   -d '{"command": "generate landing page title: My Product"}'
 ```
@@ -45,7 +45,7 @@ curl -X POST http://localhost:8000/api/v1/convert/text3html \
 ### Generowanie formularza
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/convert/text3html \
+curl -X POST http://localhost:8001/api/v1/convert/text3html \
   -H "Content-Type: application/json" \
   -d '{"command": "generate form for contact"}'
 ```
@@ -53,7 +53,7 @@ curl -X POST http://localhost:8000/api/v1/convert/text3html \
 ### Analiza SEO
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/convert/text2html \
+curl -X POST http://localhost:8001/api/v1/convert/text2html \
   -H "Content-Type: application/json" \
   -d '{
     "command": "seo analysis",
@@ -64,7 +64,7 @@ curl -X POST http://localhost:8000/api/v1/convert/text2html \
 ### Pipeline (generuj + waliduj)
 
 ```bash
-curl -X POST http://localhost:8000/api/v1/pipeline \
+curl -X POST http://localhost:8001/api/v1/pipeline \
   -H "Content-Type: application/json" \
   -d '{
     "name": "generate-and-validate",
@@ -78,7 +78,7 @@ curl -X POST http://localhost:8000/api/v1/pipeline \
 ### WebSocket Streaming
 
 ```javascript
-const ws = new WebSocket('ws://localhost:8000/api/v1/stream');
+const ws = new WebSocket('ws://localhost:8001/api/v1/stream');
 
 ws.onopen = () => {
     ws.send(JSON.stringify({

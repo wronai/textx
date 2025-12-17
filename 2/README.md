@@ -19,8 +19,8 @@ Interaktywny frontend HTML do generowania kodu HTML za pomocą NLP2CMD Text4 API
 # Uruchom frontend + API razem
 docker-compose up -d
 
-# Frontend dostępny na: http://localhost:8080
-# API dostępne na: http://localhost:8000
+# Frontend dostępny na: http://localhost:8081
+# API dostępne na: http://localhost:8001
 ```
 
 ### Tylko frontend (wymaga działającego API)
@@ -36,7 +36,7 @@ docker run -p 8080:80 nlp2cmd-web
 ┌─────────────────┐     ┌─────────────────┐
 │   Web Frontend  │────▶│  NLP2CMD API    │
 │   (nginx:80)    │     │  (FastAPI:8000) │
-│   port: 8080    │     │  port: 8000     │
+│   port: 8081    │     │  port: 8001     │
 └─────────────────┘     └─────────────────┘
          │                      │
          └──────────────────────┘
@@ -45,7 +45,7 @@ docker run -p 8080:80 nlp2cmd-web
 
 ## Użycie
 
-1. **Otwórz** http://localhost:8080
+1. **Otwórz** http://localhost:8081
 2. **Wybierz szablon** (Landing, Form, Table, Card, Page)
 3. **Wpisz polecenie** np. "generate landing page title: My Product"
 4. **Kliknij Generate** lub **Pipeline**
@@ -72,5 +72,5 @@ Frontend proxy'uje żądania do API przez nginx:
 ## Środowisko
 
 - Nginx Alpine
-- Port: 8080 (frontend), 8000 (API)
+- Port: 8081 (frontend), 8001 (API)
 - Docker Network: nlp2cmd-network

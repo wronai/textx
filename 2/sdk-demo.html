@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NLP2CMD SDK Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: system-ui, sans-serif; line-height: 1.6; background: #f5f5f5; }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        .header h1 { margin-bottom: 0.5rem; }
+        .header p { opacity: 0.9; }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .section h2 { 
+            color: #667eea; 
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+        }
+        .code-block .keyword { color: #569cd6; }
+        .code-block .string { color: #ce9178; }
+        .code-block .function { color: #dcdcaa; }
+        .code-block .comment { color: #6a9955; }
+        
+        .demo-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        @media (max-width: 768px) {
+            .demo-area { grid-template-columns: 1fr; }
+        }
+        
+        .input-area, .output-area {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 1rem;
+        }
+        .input-area { background: #fafafa; }
+        .output-area { background: #f0f0f0; min-height: 200px; }
+        
+        label { display: block; font-weight: 500; margin-bottom: 0.5rem; }
+        
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        textarea { min-height: 100px; resize: vertical; }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover { background: #5a67d8; }
+        .btn-secondary { background: #eee; color: #333; }
+        .btn-secondary:hover { background: #ddd; }
+        
+        .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        
+        #output-container { min-height: 150px; }
+        
+        .status {
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+        .status.success { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        .status.info { background: #cce5ff; color: #004085; }
+        
+        .example-buttons { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 0.5rem; 
+            margin-bottom: 1rem; 
+        }
+        .example-btn {
+            padding: 0.5rem 1rem;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .example-btn:hover { background: #e0e0e0; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 NLP2CMD JavaScript SDK</h1>
+        <p>Generuj i edytuj HTML za pomocą języka naturalnego</p>
+    </div>
+
+    <div class="container">
+        <!-- Nomenclature -->
+        <div class="section">
+            <h2>📖 Nomenklatura</h2>
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr style="background: #f8f9fa;">
+                    <th style="padding: 0.75rem; text-align: left; border-bottom: 1px solid #ddd;">Funkcja</th>
+                    <th style="padding: 0.75rem; text-align: left; border-bottom: 1px solid #ddd;">Typ</th>
+                    <th style="padding: 0.75rem; text-align: left; border-bottom: 1px solid #ddd;">Opis</th>
+                </tr>
+                <tr>
+                    <td style="padding: 0.75rem; border-bottom: 1px solid #ddd;"><code>text2html()</code></td>
+                    <td style="padding: 0.75rem; border-bottom: 1px solid #ddd;">GENERATE</td>
+                    <td style="padding: 0.75rem; border-bottom: 1px solid #ddd;">Generuje nowy HTML z opisu</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.75rem; border-bottom: 1px solid #ddd;"><code>text3html()</code></td>
+                    <td style="padding: 0.75rem; border-bottom: 1px solid #ddd;">EDIT</td>
+                    <td style="padding: 0.75rem; border-bottom: 1px solid #ddd;">Edytuje istniejący HTML</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.75rem; border-bottom: 1px solid #ddd;"><code>text2dom()</code></td>
+                    <td style="padding: 0.75rem; border-bottom: 1px solid #ddd;">DOM</td>
+                    <td style="padding: 0.75rem; border-bottom: 1px solid #ddd;">Wstawia HTML do strony</td>
+                </tr>
+                <tr>
+                    <td style="padding: 0.75rem;"><code>text2style()</code></td>
+                    <td style="padding: 0.75rem;">DOM</td>
+                    <td style="padding: 0.75rem;">Styluje element</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Demo: text2html -->
+        <div class="section">
+            <h2>🎨 text2html - Generowanie HTML</h2>
+            <p>Generuj HTML z opisu w języku naturalnym:</p>
+            
+            <div class="example-buttons">
+                <button class="example-btn" onclick="setExample('generate landing page title: CloudSync')">Landing Page</button>
+                <button class="example-btn" onclick="setExample('generate form for contact')">Formularz</button>
+                <button class="example-btn" onclick="setExample('generate table')">Tabela</button>
+                <button class="example-btn" onclick="setExample('generate card title: Product')">Karta</button>
+            </div>
+            
+            <div class="demo-area">
+                <div class="input-area">
+                    <label for="command">Komenda:</label>
+                    <input type="text" id="command" placeholder="generate landing page title: My Product">
+                    
+                    <label for="json-data">Dane JSON (opcjonalnie):</label>
+                    <textarea id="json-data" placeholder='[{"name": "Jan", "age": 25}, {"name": "Anna", "age": 30}]'></textarea>
+                    
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="generateHtml()">🚀 Generate</button>
+                        <button class="btn btn-secondary" onclick="insertToPage()">📥 Insert to Page</button>
+                    </div>
+                </div>
+                
+                <div class="output-area">
+                    <label>Wynik:</label>
+                    <div id="status"></div>
+                    <pre id="output-code" style="white-space: pre-wrap; font-size: 0.85rem; max-height: 300px; overflow: auto;"></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Demo: text2dom -->
+        <div class="section">
+            <h2>📍 text2dom - Wstawianie do DOM</h2>
+            <p>Wstaw wygenerowany HTML do strony za pomocą języka naturalnego:</p>
+            
+            <div class="code-block">
+<span class="comment">// Przykład użycia text2dom</span>
+<span class="keyword">const</span> json_data = [
+    { name: <span class="string">"Jan"</span>, age: 25, city: <span class="string">"Warszawa"</span> },
+    { name: <span class="string">"Anna"</span>, age: 30, city: <span class="string">"Kraków"</span> }
+];
+
+<span class="comment">// Generuj tabelę i wstaw na dole strony</span>
+<span class="function">text2dom</span>(
+    <span class="string">"Umieść html na dole strony"</span>,
+    <span class="function">text2html</span>(<span class="string">"wygeneruj tabele z danych"</span>, json_data)
+);
+
+<span class="comment">// Lub krócej z dataToTable</span>
+<span class="function">text2dom</span>(<span class="string">"dodaj na górze #output-container"</span>, <span class="function">dataToTable</span>(json_data));
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="demoText2Dom()">▶️ Uruchom Demo</button>
+                <button class="btn btn-secondary" onclick="clearOutput()">🗑️ Wyczyść</button>
+            </div>
+            
+            <div id="output-container" style="margin-top: 1rem; padding: 1rem; border: 2px dashed #ddd; border-radius: 4px; min-height: 100px;">
+                <p style="color: #999; text-align: center;">← Tutaj pojawi się wygenerowany HTML →</p>
+            </div>
+        </div>
+
+        <!-- Demo: Pipeline -->
+        <div class="section">
+            <h2>🔄 Pipeline - Łańcuch operacji</h2>
+            <p>Wykonaj wiele operacji w sekwencji:</p>
+            
+            <div class="code-block">
+<span class="keyword">const</span> nlp = <span class="keyword">new</span> <span class="function">NLP2CMD</span>(<span class="string">'http://localhost:8001'</span>);
+
+<span class="keyword">const</span> result = <span class="keyword">await</span> nlp.<span class="function">pipeline</span>([
+    { converter: <span class="string">"text2html"</span>, command: <span class="string">"generate form for login"</span> },    <span class="comment">// GENERATE</span>
+    { converter: <span class="string">"text3html"</span>, command: <span class="string">"add remember me checkbox"</span> }  <span class="comment">// EDIT</span>
+]);
+
+<span class="function">text2dom</span>(<span class="string">"wstaw do #output-container"</span>, result.final_output);
+            </div>
+            
+            <button class="btn btn-primary" onclick="demoPipeline()">▶️ Uruchom Pipeline</button>
+        </div>
+
+        <!-- Demo: text2style -->
+        <div class="section">
+            <h2>🎨 text2style - Stylowanie elementów</h2>
+            <p>Zmień style elementów za pomocą języka naturalnego:</p>
+            
+            <div class="code-block">
+<span class="comment">// Styluj element</span>
+<span class="function">text2style</span>(<span class="string">"make it bold and red"</span>, <span class="string">"#my-element"</span>);
+<span class="function">text2style</span>(<span class="string">"wyśrodkuj i powiększ"</span>, document.<span class="function">querySelector</span>(<span class="string">"h1"</span>));
+<span class="function">text2style</span>(<span class="string">"background blue, padding 20px"</span>, <span class="string">".card"</span>);
+            </div>
+            
+            <div id="style-demo" style="padding: 1rem; background: #f0f0f0; border-radius: 4px; margin: 1rem 0;">
+                Ten element zostanie ostylowany
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="text2style('bold and red', '#style-demo')">Bold + Red</button>
+                <button class="btn btn-secondary" onclick="text2style('center and big', '#style-demo')">Center + Big</button>
+                <button class="btn btn-secondary" onclick="text2style('background blue, color white', '#style-demo')">Blue BG</button>
+                <button class="btn btn-secondary" onclick="document.getElementById('style-demo').removeAttribute('style')">Reset</button>
+            </div>
+        </div>
+
+        <!-- API Reference -->
+        <div class="section">
+            <h2>📚 API Reference</h2>
+            
+            <h3 style="margin-top: 1rem;">Funkcje GENERATE (text2X)</h3>
+            <div class="code-block">
+<span class="function">text2html</span>(command, data?)      <span class="comment">// Generuj HTML</span>
+<span class="function">text2markdown</span>(command, data?) <span class="comment">// Generuj Markdown</span>
+<span class="function">text2svg</span>(command, data?)      <span class="comment">// Generuj SVG</span>
+<span class="function">text2json</span>(command, schema?)   <span class="comment">// Generuj JSON</span>
+<span class="function">text2css</span>(command)             <span class="comment">// Generuj CSS</span>
+            </div>
+            
+            <h3 style="margin-top: 1rem;">Funkcje EDIT (text3X)</h3>
+            <div class="code-block">
+<span class="function">text3html</span>(command, html)      <span class="comment">// Edytuj HTML</span>
+<span class="function">text3markdown</span>(command, md)    <span class="comment">// Edytuj Markdown</span>
+<span class="function">text3css</span>(command, css)        <span class="comment">// Edytuj CSS</span>
+            </div>
+            
+            <h3 style="margin-top: 1rem;">Funkcje DOM</h3>
+            <div class="code-block">
+<span class="function">text2dom</span>(placement, html)     <span class="comment">// Wstaw do DOM</span>
+<span class="function">text2style</span>(styles, element)   <span class="comment">// Styluj element</span>
+<span class="function">text2query</span>(query)             <span class="comment">// Znajdź elementy</span>
+            </div>
+            
+            <h3 style="margin-top: 1rem;">Utilities</h3>
+            <div class="code-block">
+<span class="function">dataToTable</span>(data, options?)   <span class="comment">// Konwertuj dane do tabeli HTML</span>
+<span class="function">dataToList</span>(data, options?)    <span class="comment">// Konwertuj dane do listy HTML</span>
+<span class="function">nlp2cmdConfig</span>({ apiUrl })    <span class="comment">// Konfiguruj SDK</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SDK Script -->
+    <script src="nlp2cmd-sdk.js" data-nlp2cmd-api="http://localhost:8001"></script>
+    
+    <script>
+        // Store last generated HTML
+        let lastGeneratedHtml = '';
+        
+        // Set example command
+        function setExample(cmd) {
+            document.getElementById('command').value = cmd;
+        }
+        
+        // Generate HTML
+        async function generateHtml() {
+            const command = document.getElementById('command').value;
+            const jsonDataStr = document.getElementById('json-data').value;
+            const statusEl = document.getElementById('status');
+            const outputEl = document.getElementById('output-code');
+            
+            if (!command) {
+                statusEl.className = 'status error';
+                statusEl.textContent = 'Wprowadź komendę';
+                return;
+            }
+            
+            statusEl.className = 'status info';
+            statusEl.textContent = 'Generowanie...';
+            
+            try {
+                let data = null;
+                if (jsonDataStr.trim()) {
+                    try {
+                        data = JSON.parse(jsonDataStr);
+                    } catch (e) {
+                        statusEl.className = 'status error';
+                        statusEl.textContent = 'Błąd parsowania JSON: ' + e.message;
+                        return;
+                    }
+                }
+                
+                const html = await text2html(command, data);
+                lastGeneratedHtml = html;
+                
+                outputEl.textContent = html;
+                statusEl.className = 'status success';
+                statusEl.textContent = `✅ Wygenerowano HTML (${html.length} znaków)`;
+                
+            } catch (error) {
+                statusEl.className = 'status error';
+                statusEl.textContent = '❌ Błąd: ' + error.message;
+                outputEl.textContent = '';
+            }
+        }
+        
+        // Insert to page
+        async function insertToPage() {
+            if (!lastGeneratedHtml) {
+                await generateHtml();
+            }
+            
+            if (lastGeneratedHtml) {
+                text2dom("umieść na dole #output-container", lastGeneratedHtml);
+                document.getElementById('status').className = 'status success';
+                document.getElementById('status').textContent = '✅ HTML wstawiony do strony';
+            }
+        }
+        
+        // Demo text2dom with data
+        async function demoText2Dom() {
+            const json_data = [
+                { name: "Jan Kowalski", age: 25, city: "Warszawa", status: "Active" },
+                { name: "Anna Nowak", age: 30, city: "Kraków", status: "Active" },
+                { name: "Piotr Wiśniewski", age: 35, city: "Gdańsk", status: "Inactive" }
+            ];
+            
+            // Clear previous content
+            const container = document.getElementById('output-container');
+            container.innerHTML = '';
+            
+            // Create table from data and insert
+            const tableHtml = dataToTable(json_data, { title: "Lista użytkowników" });
+            text2dom("umieść na dole #output-container", tableHtml);
+            
+            // Also try to generate via API if available
+            try {
+                const html = await text2html("generate card title: Sukces", { message: "Tabela została wygenerowana!" });
+                text2dom("dodaj na górze #output-container", html);
+            } catch (e) {
+                // Fallback if API not available
+                const fallbackCard = `<div style="padding: 1rem; background: #d4edda; border-radius: 4px; margin-bottom: 1rem;">
+                    <strong>✅ Sukces!</strong> Tabela została wygenerowana z danych JSON.
+                </div>`;
+                text2dom("dodaj na górze #output-container", fallbackCard);
+            }
+        }
+        
+        // Demo pipeline
+        async function demoPipeline() {
+            const container = document.getElementById('output-container');
+            container.innerHTML = '<p style="color: #666;">Wykonywanie pipeline...</p>';
+            
+            try {
+                const nlp = new NLP2CMD('http://localhost:8001');
+                
+                const result = await nlp.pipeline([
+                    { converter: "text2html", command: "generate form for login" },
+                    { converter: "text3html", command: "add button" }
+                ]);
+                
+                if (result.final_output) {
+                    container.innerHTML = '';
+                    text2dom("wstaw do #output-container", result.final_output);
+                } else {
+                    container.innerHTML = '<p style="color: #dc3545;">Pipeline nie zwrócił wyniku</p>';
+                }
+                
+            } catch (error) {
+                container.innerHTML = `<p style="color: #dc3545;">Błąd: ${error.message}</p>`;
+            }
+        }
+        
+        // Clear output
+        function clearOutput() {
+            document.getElementById('output-container').innerHTML = 
+                '<p style="color: #999; text-align: center;">← Tutaj pojawi się wygenerowany HTML →</p>';
+        }
+    </script>
+</body>
+</html>
