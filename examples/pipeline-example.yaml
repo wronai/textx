@@ -1,0 +1,127 @@
+# pipeline-example.yaml
+# Przykładowy plik konfiguracyjny dla NLP2CMD Pipeline
+
+# Nazwa workflow
+name: "Development Setup Workflow"
+
+# Opis
+description: "Kompletny workflow do setupu środowiska deweloperskiego"
+
+# Kroki do wykonania
+steps:
+  # 1. Konfiguracja środowiska
+  - module: env
+    command: "ustaw NODE_ENV na development"
+    description: "Ustawienie trybu deweloperskiego"
+  
+  - module: env
+    command: "ustaw PORT na 3000"
+    description: "Konfiguracja portu aplikacji"
+  
+  - module: env
+    command: "dodaj DATABASE_URL z wartością postgres://localhost:5432/devdb"
+    description: "Konfiguracja bazy danych"
+  
+  # 2. Uruchomienie bazy danych
+  - module: docker
+    command: "uruchom postgres na porcie 5432"
+    description: "Start PostgreSQL"
+  
+  - module: docker
+    command: "uruchom redis na porcie 6379"
+    description: "Start Redis"
+  
+  # 3. Czekaj na uruchomienie serwisów
+  - module: bash
+    command: "poczekaj 5 sekund"
+    description: "Czekaj na inicjalizację serwisów"
+  
+  # 4. Instalacja zależności
+  - module: make
+    command: "zainstaluj zależności"
+    description: "Instalacja npm/pip packages"
+  
+  # 5. Migracje bazy danych
+  - module: make
+    command: "uruchom migracje"
+    description: "Aplikuj migracje bazy danych"
+  
+  # 6. Build aplikacji
+  - module: make
+    command: "zbuduj aplikację"
+    description: "Kompilacja aplikacji"
+  
+  # 7. Weryfikacja
+  - module: bash
+    command: "sprawdź czy postgres działa"
+    description: "Weryfikacja PostgreSQL"
+
+# Opcje
+options:
+  stop_on_error: true
+  dry_run: false
+  verbose: true
+
+---
+# pipeline-ci.yaml
+# Pipeline dla CI/CD
+
+name: "CI/CD Pipeline"
+description: "Automated testing and deployment"
+
+steps:
+  # Lint
+  - module: make
+    command: "sprawdź kod"
+    description: "Run linters"
+  
+  # Tests
+  - module: make
+    command: "uruchom testy"
+    description: "Run unit tests"
+  
+  # Build
+  - module: make
+    command: "zbuduj aplikację"
+    description: "Build production bundle"
+  
+  # Docker
+  - module: docker
+    command: "zbuduj obraz z tagiem latest"
+    description: "Build Docker image"
+  
+  # Deploy (jeśli testy przeszły)
+  - module: bash
+    command: "wdróż na staging"
+    description: "Deploy to staging"
+
+options:
+  stop_on_error: true
+  dry_run: false
+
+---
+# pipeline-cleanup.yaml
+# Pipeline do czyszczenia
+
+name: "Cleanup Pipeline"
+description: "Clean up development environment"
+
+steps:
+  # Stop containers
+  - module: docker
+    command: "zatrzymaj wszystkie kontenery"
+    description: "Stop all running containers"
+  
+  # Clean build artifacts
+  - module: make
+    command: "wyczyść"
+    description: "Clean build artifacts"
+  
+  # Remove temp files
+  - module: bash
+    command: "usuń pliki tymczasowe"
+    description: "Remove temporary files"
+
+options:
+  stop_on_error: false
+  dry_run: false

@@ -1,0 +1,149 @@
+# nlp2cmd.yaml - Konfiguracja dla NLP2CMD
+
+# Ustawienia modelu LLM
+model:
+  # Nazwa modelu lub alias
+  # Dostępne aliasy: phi-2, tinyllama, bielik, phi-1.5
+  name: "phi-2"
+  
+  # Urządzenie do obliczeń
+  device: "cpu"  # lub "cuda" dla GPU
+  
+  # 8-bit quantization (dla oszczędności pamięci)
+  use_8bit: false
+  
+  # Maksymalna długość sekwencji
+  max_length: 512
+  
+  # Temperatura generacji (0.0 - 1.0)
+  # Niższa = bardziej deterministyczne
+  temperature: 0.3
+  
+  # Top-p (nucleus sampling)
+  top_p: 0.9
+  
+  # Top-k sampling
+  top_k: 50
+
+# Konfiguracja Text2Env
+text2env:
+  # Ścieżka do pliku .env
+  env_file: ".env"
+  
+  # Czy tworzyć backup przed zmianami
+  backup: true
+  
+  # Czy tworzyć plik jeśli nie istnieje
+  create_if_missing: true
+  
+  # Tryb bezpieczny
+  safe_mode: true
+  
+  # Dry run (tylko symulacja)
+  dry_run: false
+
+# Konfiguracja Text2Bash
+text2bash:
+  # Tryb bezpieczny
+  safe_mode: true
+  
+  # Dry run
+  dry_run: false
+  
+  # Timeout dla komend (sekundy)
+  timeout: 30
+  
+  # Czy pozwolić na potencjalnie niebezpieczne komendy
+  allow_dangerous: false
+  
+  # Whitelist dozwolonych komend (opcjonalnie)
+  whitelist: []
+  # whitelist:
+  #   - "ls"
+  #   - "cat"
+  #   - "grep"
+
+# Konfiguracja Text2Makefile
+text2makefile:
+  # Ścieżka do Makefile
+  makefile: "Makefile"
+  
+  # Katalog roboczy
+  working_dir: null
+  
+  # Timeout (sekundy)
+  timeout: 300
+  
+  # Tryb bezpieczny
+  safe_mode: true
+  
+  # Dry run
+  dry_run: false
+
+# Konfiguracja Text2Docker
+text2docker:
+  # Docker host
+  docker_host: null  # domyślnie: unix://var/run/docker.sock
+  
+  # Timeout (sekundy)
+  timeout: 60
+  
+  # Automatyczne pobieranie obrazów
+  auto_pull: true
+  
+  # Tryb bezpieczny
+  safe_mode: true
+  
+  # Dry run
+  dry_run: false
+
+# Konfiguracja Pipeline
+pipeline:
+  # Czy zatrzymać pipeline przy pierwszym błędzie
+  stop_on_error: true
+
+# Ustawienia bezpieczeństwa
+security:
+  # Globalne niebezpieczne patterny (dodatkowe)
+  custom_dangerous_patterns: []
+  # custom_dangerous_patterns:
+  #   - "my_dangerous_command"
+  
+  # Whitelist komend (nadpisuje blacklist)
+  whitelist: []
+  
+  # Czy logować wszystkie wykonania
+  log_all_executions: true
+  
+  # Katalog dla logów
+  log_directory: "logs"
+
+# Logging
+logging:
+  # Poziom logowania
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  
+  # Format logów
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  # Czy logować do pliku
+  file_enabled: false
+  
+  # Ścieżka do pliku logów
+  file_path: "nlp2cmd.log"
+
+# Cache dla modeli
+cache:
+  # Katalog cache dla modeli HuggingFace
+  model_cache_dir: null  # domyślnie: ~/.cache/huggingface
+  
+  # Czy używać cache
+  use_cache: true
+
+# Performance
+performance:
+  # Liczba wątków dla tokenizacji
+  tokenizer_threads: 4
+  
+  # Batch size dla przetwarzania wsadowego
+  batch_size: 8
