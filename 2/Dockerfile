@@ -6,6 +6,11 @@ COPY nginx.conf /etc/nginx/nginx.conf
 # Copy static files
 COPY index.html /usr/share/nginx/html/
 COPY sdk-demo.html /usr/share/nginx/html/
+COPY sdk-demo.css /usr/share/nginx/html/
+COPY sdk-demo-app.js /usr/share/nginx/html/
+COPY landing-example.html /usr/share/nginx/html/
+COPY landing-example.css /usr/share/nginx/html/
+COPY landing-example.js /usr/share/nginx/html/
 COPY nlp2cmd-sdk.js /usr/share/nginx/html/
 
 # Expose port

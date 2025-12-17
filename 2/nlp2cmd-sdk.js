@@ -837,6 +837,6 @@
         }
     });
 
-    console.log('[NLP2CMD] SDK loaded. Available functions: text2html, text2dom, text3html, text2style, text2query');
+    console.log('[NLP2CMD] SDK loaded. Available functions: text2html, text2dom, text3html, text2style, text4style, text2query');
 
 })(typeof window !== 'undefined' ? window : global);
