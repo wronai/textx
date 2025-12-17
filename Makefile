@@ -59,3 +59,10 @@ watch-test:
 
 check: lint test
 	@echo "All checks passed!"
+
+up:
+	docker-compose up --build
+
+
+down:
+	docker-compose down

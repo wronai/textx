@@ -1,0 +1,67 @@
+version: '3.8'
+
+# NLP2CMD Text4 - Complete Docker Setup
+# 
+# This docker-compose file runs both services:
+# - ./1/ - NLP2CMD API (text4 backend service)
+# - ./2/ - Web Frontend (HTML generator UI)
+#
+# Usage:
+#   docker-compose up -d          # Start all services
+#   docker-compose logs -f        # View logs
+#   docker-compose down           # Stop all services
+
+services:
+  # ============================================================================
+  # NLP2CMD API Service (./1/)
+  # Backend API for text-to-HTML conversion
+  # ============================================================================
+  nlp2cmd-api:
+    build:
+      context: .
+      dockerfile: 1/Dockerfile.full
+    container_name: nlp2cmd-text4-api
+    ports:
+      - "8001:8000"
+    environment:
+      - LOG_LEVEL=info
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./1/output:/app/output
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - nlp2cmd-network
+
+  # ============================================================================
+  # Web Frontend Service (./2/)
+  # Interactive HTML generator UI
+  # ============================================================================
+  web-frontend:
+    build:
+      context: ./2
+      dockerfile: Dockerfile
+    container_name: nlp2cmd-web-frontend
+    ports:
+      - "8081:80"
+    depends_on:
+      nlp2cmd-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - nlp2cmd-network
+
+networks:
+  nlp2cmd-network:
+    driver: bridge
+    name: nlp2cmd-network

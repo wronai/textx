@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  nlp2cmd-api:
+    build:
+      context: ..
+      dockerfile: 1/Dockerfile.full
+    container_name: nlp2cmd-text4-api
+    ports:
+      - "8000:8000"
+    environment:
+      - LOG_LEVEL=info
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./output:/app/output
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    networks:
+      - nlp2cmd-network
+
+networks:
+  nlp2cmd-network:
+    driver: bridge

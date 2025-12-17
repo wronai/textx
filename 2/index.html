@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NLP2CMD Text4 - Interactive HTML Generator">
+    <title>NLP2CMD Text4 - HTML Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a67d8;
+            --secondary: #764ba2;
+            --bg: #f7fafc;
+            --card-bg: #ffffff;
+            --text: #2d3748;
+            --text-muted: #718096;
+            --border: #e2e8f0;
+            --success: #48bb78;
+            --error: #f56565;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        /* Main layout */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: var(--bg);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Form elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        /* Template buttons */
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .template-btn {
+            padding: 0.75rem;
+            text-align: center;
+            background: var(--bg);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .template-btn:hover {
+            border-color: var(--primary);
+        }
+
+        .template-btn.active {
+            border-color: var(--primary);
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .template-btn .icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .template-btn .name {
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Output preview */
+        .preview-container {
+            background: var(--bg);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .preview-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .preview-tab {
+            padding: 0.75rem 1.25rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-muted);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .preview-tab:hover {
+            color: var(--text);
+        }
+
+        .preview-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .preview-content {
+            min-height: 400px;
+            max-height: 600px;
+            overflow: auto;
+        }
+
+        .preview-html {
+            padding: 1rem;
+        }
+
+        .preview-code {
+            padding: 1rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            background: #1a202c;
+            color: #e2e8f0;
+        }
+
+        /* Status indicators */
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-muted);
+        }
+
+        .status-dot.connected {
+            background: var(--success);
+        }
+
+        .status-dot.error {
+            background: var(--error);
+        }
+
+        .status-dot.loading {
+            background: var(--primary);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Log panel */
+        .log-panel {
+            background: #1a202c;
+            color: #e2e8f0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.8rem;
+            padding: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .log-entry {
+            margin-bottom: 0.25rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .log-time {
+            color: #718096;
+        }
+
+        .log-info { color: #63b3ed; }
+        .log-success { color: #68d391; }
+        .log-error { color: #fc8181; }
+        .log-warn { color: #f6e05e; }
+
+        /* Info banner */
+        .info-banner {
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .info-banner .icon {
+            font-size: 1.5rem;
+        }
+
+        /* Pipeline visualization */
+        .pipeline-steps {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+
+        .pipeline-step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg);
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .pipeline-step.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .pipeline-step.completed {
+            background: var(--success);
+            color: white;
+        }
+
+        .pipeline-arrow {
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🚀 NLP2CMD Text4</h1>
+        <p>Generate HTML from natural language descriptions</p>
+    </header>
+
+    <div class="container">
+        <div class="info-banner">
+            <span class="icon">💡</span>
+            <div>
+                <strong>Interactive HTML Generator</strong> - Describe what you want to create and the system will generate HTML code in real-time.
+                Connected to NLP2CMD API via Docker.
+            </div>
+        </div>
+
+        <div class="grid">
+            <!-- Input Panel -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>📝 Generator</h2>
+                    <div class="status">
+                        <span class="status-dot" id="connectionStatus"></span>
+                        <span id="connectionText">Connecting...</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Template selection -->
+                    <div class="form-group">
+                        <label>Template Type</label>
+                        <div class="template-grid">
+                            <button class="template-btn active" data-template="landing" onclick="selectTemplate('landing')">
+                                <div class="icon">🏠</div>
+                                <div class="name">Landing</div>
+                            </button>
+                            <button class="template-btn" data-template="form" onclick="selectTemplate('form')">
+                                <div class="icon">📋</div>
+                                <div class="name">Form</div>
+                            </button>
+                            <button class="template-btn" data-template="table" onclick="selectTemplate('table')">
+                                <div class="icon">📊</div>
+                                <div class="name">Table</div>
+                            </button>
+                            <button class="template-btn" data-template="card" onclick="selectTemplate('card')">
+                                <div class="icon">🃏</div>
+                                <div class="name">Card</div>
+                            </button>
+                            <button class="template-btn" data-template="page" onclick="selectTemplate('page')">
+                                <div class="icon">📄</div>
+                                <div class="name">Page</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Command input -->
+                    <div class="form-group">
+                        <label for="command">Command (natural language)</label>
+                        <textarea id="command" placeholder="e.g., generate landing page title: My Product for cloud storage service with features: fast, secure, scalable"></textarea>
+                    </div>
+
+                    <!-- API endpoint selection -->
+                    <div class="form-group">
+                        <label for="converter">Converter</label>
+                        <select id="converter">
+                            <option value="text3html" selected>text3html - Generate HTML</option>
+                            <option value="text2html">text2html - Analyze HTML</option>
+                        </select>
+                    </div>
+
+                    <!-- HTML content for analysis -->
+                    <div class="form-group" id="htmlContentGroup" style="display: none;">
+                        <label for="htmlContent">HTML Content (for analysis)</label>
+                        <textarea id="htmlContent" placeholder="Paste HTML content to analyze..."></textarea>
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="generateHTML()">
+                            <span>⚡</span> Generate
+                        </button>
+                        <button class="btn btn-secondary" onclick="runPipeline()">
+                            <span>🔄</span> Pipeline
+                        </button>
+                        <button class="btn btn-secondary" onclick="clearAll()">
+                            <span>🗑️</span> Clear
+                        </button>
+                    </div>
+
+                    <!-- Pipeline visualization -->
+                    <div id="pipelineViz" style="display: none;">
+                        <label style="margin-top: 1rem; display: block; font-weight: 500;">Pipeline Progress</label>
+                        <div class="pipeline-steps" id="pipelineSteps"></div>
+                    </div>
+
+                    <!-- Log panel -->
+                    <div class="log-panel" id="logPanel">
+                        <div class="log-entry">
+                            <span class="log-time">[--:--:--]</span>
+                            <span class="log-info">Waiting for connection...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Output Panel -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>👁️ Preview</h2>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" onclick="copyCode()">
+                            <span>📋</span> Copy
+                        </button>
+                        <button class="btn btn-secondary" onclick="downloadHTML()">
+                            <span>💾</span> Download
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="preview-container">
+                        <div class="preview-tabs">
+                            <button class="preview-tab active" onclick="switchTab('preview')">Preview</button>
+                            <button class="preview-tab" onclick="switchTab('code')">Code</button>
+                            <button class="preview-tab" onclick="switchTab('metadata')">Metadata</button>
+                        </div>
+                        <div class="preview-content">
+                            <div id="previewPane" class="preview-html">
+                                <p style="color: #718096; text-align: center; padding: 2rem;">
+                                    Generated HTML will appear here...
+                                </p>
+                            </div>
+                            <div id="codePane" class="preview-code" style="display: none;">
+                                <!-- Code will appear here -->
+                            </div>
+                            <div id="metadataPane" class="preview-code" style="display: none;">
+                                <!-- Metadata will appear here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>
+            NLP2CMD Text4 API • 
+            <a href="http://localhost:8000/docs" target="_blank">API Docs</a> • 
+            <a href="http://localhost:8000/demo" target="_blank">Demo Page</a>
+        </p>
+    </footer>
+
+    <script>
+        // Configuration
+        // When running via nginx proxy, use relative paths
+        // When running standalone, use direct API URLs
+        const isProxied = window.location.port === '8080' || window.location.port === '80';
+        const API_URL = isProxied ? '' : 'http://localhost:8000';
+        const WS_URL = isProxied ? `ws://${window.location.host}/ws/` : 'ws://localhost:8000/api/v1/stream';
+
+        // State
+        let currentTemplate = 'landing';
+        let generatedHTML = '';
+        let metadata = {};
+        let ws = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            checkConnection();
+            setupWebSocket();
+            updateTemplateHint();
+            
+            // Converter change handler
+            document.getElementById('converter').addEventListener('change', (e) => {
+                const htmlContentGroup = document.getElementById('htmlContentGroup');
+                htmlContentGroup.style.display = e.target.value === 'text2html' ? 'block' : 'none';
+            });
+        });
+
+        // Check API connection
+        async function checkConnection() {
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                const data = await response.json();
+                
+                if (data.status === 'healthy') {
+                    setConnectionStatus('connected', 'Connected to API');
+                    log('Connected to NLP2CMD API', 'success');
+                }
+            } catch (error) {
+                setConnectionStatus('error', 'API Offline');
+                log('Cannot connect to API: ' + error.message, 'error');
+            }
+        }
+
+        // WebSocket setup
+        function setupWebSocket() {
+            try {
+                ws = new WebSocket(WS_URL);
+                
+                ws.onopen = () => {
+                    log('WebSocket connected', 'success');
+                };
+                
+                ws.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    handleWSMessage(data);
+                };
+                
+                ws.onerror = (error) => {
+                    log('WebSocket error', 'error');
+                };
+                
+                ws.onclose = () => {
+                    log('WebSocket disconnected', 'warn');
+                    // Reconnect after 5s
+                    setTimeout(setupWebSocket, 5000);
+                };
+            } catch (error) {
+                log('WebSocket setup failed: ' + error.message, 'error');
+            }
+        }
+
+        // Handle WebSocket messages
+        function handleWSMessage(data) {
+            if (data.event === 'generated') {
+                if (data.success) {
+                    generatedHTML = data.output;
+                    metadata = data.metadata || {};
+                    updatePreview();
+                    log('HTML generated via WebSocket', 'success');
+                } else {
+                    log('Generation failed: ' + data.error, 'error');
+                }
+            } else if (data.event === 'analyzed') {
+                metadata = data.metadata || {};
+                updateMetadata();
+                log('HTML analyzed', 'info');
+            }
+        }
+
+        // Generate HTML
+        async function generateHTML() {
+            const command = document.getElementById('command').value.trim();
+            const converter = document.getElementById('converter').value;
+            
+            if (!command) {
+                log('Please enter a command', 'warn');
+                return;
+            }
+            
+            setConnectionStatus('loading', 'Generating...');
+            log(`Sending request to ${converter}...`, 'info');
+            
+            try {
+                const body = { command };
+                
+                if (converter === 'text2html') {
+                    body.html_content = document.getElementById('htmlContent').value;
+                }
+                
+                const response = await fetch(`${API_URL}/api/v1/convert/${converter}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    generatedHTML = data.output;
+                    metadata = data.metadata || {};
+                    updatePreview();
+                    log(`${converter} completed successfully`, 'success');
+                    setConnectionStatus('connected', 'Connected');
+                } else {
+                    log('Error: ' + data.error, 'error');
+                    setConnectionStatus('error', 'Error');
+                }
+            } catch (error) {
+                log('Request failed: ' + error.message, 'error');
+                setConnectionStatus('error', 'Error');
+            }
+        }
+
+        // Run pipeline
+        async function runPipeline() {
+            const command = document.getElementById('command').value.trim();
+            
+            if (!command) {
+                log('Please enter a command', 'warn');
+                return;
+            }
+            
+            setConnectionStatus('loading', 'Running pipeline...');
+            showPipeline();
+            
+            const steps = [
+                { converter: 'text3html', command: command },
+                { converter: 'text2html', command: 'validate' }
+            ];
+            
+            updatePipelineStep(0, 'active');
+            log('Starting pipeline...', 'info');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/v1/pipeline`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: 'generate-and-validate',
+                        steps: steps
+                    })
+                });
+                
+                const data = await response.json();
+                
+                // Update pipeline visualization
+                data.steps_results.forEach((step, i) => {
+                    updatePipelineStep(i, step.status === 'success' ? 'completed' : 'error');
+                });
+                
+                if (data.final_output) {
+                    generatedHTML = data.final_output;
+                    metadata = data;
+                    updatePreview();
+                }
+                
+                log(`Pipeline completed: ${data.successful_steps}/${data.total_steps} steps`, 
+                    data.status === 'success' ? 'success' : 'warn');
+                setConnectionStatus('connected', 'Connected');
+                
+            } catch (error) {
+                log('Pipeline failed: ' + error.message, 'error');
+                setConnectionStatus('error', 'Error');
+            }
+        }
+
+        // Update preview
+        function updatePreview() {
+            document.getElementById('previewPane').innerHTML = generatedHTML;
+            document.getElementById('codePane').textContent = generatedHTML;
+            updateMetadata();
+        }
+
+        // Update metadata display
+        function updateMetadata() {
+            document.getElementById('metadataPane').textContent = JSON.stringify(metadata, null, 2);
+        }
+
+        // Switch preview tabs
+        function switchTab(tab) {
+            document.querySelectorAll('.preview-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.preview-content > div').forEach(p => p.style.display = 'none');
+            
+            event.target.classList.add('active');
+            document.getElementById(tab + 'Pane').style.display = 'block';
+        }
+
+        // Select template
+        function selectTemplate(template) {
+            currentTemplate = template;
+            document.querySelectorAll('.template-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.template === template);
+            });
+            updateTemplateHint();
+        }
+
+        // Update template hint
+        function updateTemplateHint() {
+            const hints = {
+                landing: 'generate landing page title: My Product',
+                form: 'generate form for contact',
+                table: 'generate table',
+                card: 'generate card',
+                page: 'generate page title: My Page'
+            };
+            document.getElementById('command').placeholder = `e.g., ${hints[currentTemplate]}`;
+        }
+
+        // Pipeline visualization
+        function showPipeline() {
+            const viz = document.getElementById('pipelineViz');
+            viz.style.display = 'block';
+            document.getElementById('pipelineSteps').innerHTML = `
+                <div class="pipeline-step" data-step="0">text3html</div>
+                <span class="pipeline-arrow">→</span>
+                <div class="pipeline-step" data-step="1">text2html</div>
+            `;
+        }
+
+        function updatePipelineStep(index, status) {
+            const step = document.querySelector(`.pipeline-step[data-step="${index}"]`);
+            if (step) {
+                step.className = `pipeline-step ${status}`;
+            }
+        }
+
+        // Copy code
+        function copyCode() {
+            navigator.clipboard.writeText(generatedHTML).then(() => {
+                log('Code copied to clipboard', 'success');
+            });
+        }
+
+        // Download HTML
+        function downloadHTML() {
+            const blob = new Blob([generatedHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'generated.html';
+            a.click();
+            URL.revokeObjectURL(url);
+            log('HTML downloaded', 'success');
+        }
+
+        // Clear all
+        function clearAll() {
+            document.getElementById('command').value = '';
+            document.getElementById('htmlContent').value = '';
+            generatedHTML = '';
+            metadata = {};
+            document.getElementById('previewPane').innerHTML = '<p style="color: #718096; text-align: center; padding: 2rem;">Generated HTML will appear here...</p>';
+            document.getElementById('codePane').textContent = '';
+            document.getElementById('metadataPane').textContent = '';
+            document.getElementById('pipelineViz').style.display = 'none';
+            log('Cleared', 'info');
+        }
+
+        // Connection status
+        function setConnectionStatus(status, text) {
+            const dot = document.getElementById('connectionStatus');
+            const txt = document.getElementById('connectionText');
+            dot.className = 'status-dot ' + status;
+            txt.textContent = text;
+        }
+
+        // Logging
+        function log(message, type = 'info') {
+            const panel = document.getElementById('logPanel');
+            const time = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-time">[${time}]</span><span class="log-${type}">${message}</span>`;
+            panel.appendChild(entry);
+            panel.scrollTop = panel.scrollHeight;
+            
+            // Keep last 50 entries
+            while (panel.children.length > 50) {
+                panel.removeChild(panel.firstChild);
+            }
+        }
+    </script>
+</body>
+</html>
