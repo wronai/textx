@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NLP2CMD SDK Demo</title>
-    <link rel="stylesheet" href="sdk-demo.css">
+    <link rel="stylesheet" href="sdk-demo.css?v=dev">
 </head>
 <body>
     <div class="header">
@@ -190,8 +190,8 @@
         </div>
     </div>
 
-    <!-- Scripts (no cache via nginx) -->
-    <script src="nlp2cmd-sdk.js" data-nlp2cmd-api="http://localhost:8001"></script>
-    <script src="sdk-demo-app.js"></script>
+    <!-- Scripts (cache-bust + no-cache via nginx) -->
+    <script src="nlp2cmd-sdk.js?v=dev" data-nlp2cmd-api="http://localhost:8001"></script>
+    <script src="sdk-demo-app.js?v=dev"></script>
 </body>
 </html>

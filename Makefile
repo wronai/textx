@@ -62,8 +62,7 @@ check: lint test
 
 up:
 	docker-compose build --no-cache
-    docker-compose up
-
+	docker-compose up --force-recreate
 
 down:
 	docker-compose down
